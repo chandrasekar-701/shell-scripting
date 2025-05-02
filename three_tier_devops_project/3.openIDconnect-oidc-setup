@@ -1,0 +1,23 @@
+why OIDC?
+OIDC(open id connect) is used to assign the iam role only to the service accounts created in the k8s cluster, instead of assiging role to entire node in that cluster.
+
+export cluster_name=<CLUSTER-NAME>
+
+########## environment variable (cluster_name) exists only inside your current terminal session (your shell, like bash, zsh, etc.).
+
+*********-----To make it permanent, you have to add it into your shell's configuration file (like ~/.bashrc, ~/.zshrc, or ~/.profile).
+
+
+
+commands to configure IAM OIDC provider:
+
+oidc_id=$(aws eks describe-cluster --name $cluster_name --query "cluster.identity.oidc.issuer" --output text | cut -d '/' -f 5) 
+
+
+To Check if there is an IAM OIDC provider configured already
+aws iam list-open-id-connect-providers | grep $oidc_id | cut -d "/" -f4
+
+
+If not, run the below command
+
+eksctl utils associate-iam-oidc-provider --cluster $cluster_name --approve

@@ -1,0 +1,36 @@
+EBS CSI Plugin configuration:
+
+
+The Amazon EBS CSI Driver  lets your Kubernetes Pods use Amazon EBS volumes as persistent storage
+
+The Amazon EBS CSI plugin requires IAM permissions to make calls to AWS APIs on your behalf.
+
+Create an IAM role and attach a policy. AWS maintains an AWS managed policy or you can create your own custom policy.
+You can create an IAM role and attach the AWS managed policy with the following command. Replace my-cluster with the name of your cluster. 
+The command deploys an AWS CloudFormation stack that creates an IAM role and attaches the IAM policy to it.
+
+eksctl create iamserviceaccount \
+    --name ebs-csi-controller-sa \
+    --namespace kube-system \
+    --cluster <YOUR-CLUSTER-NAME> \
+    --role-name AmazonEKS_EBS_CSI_DriverRole \
+    --role-only \
+    --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy \
+    --approve
+
+
+The IAM service account (ebs-csi-controller-sa) created by this eksctl command is assigned to the EBS CSI driver in your EKS cluster.
+
+
+Run the following command. Replace with the name of your cluster, with your account ID.
+
+eksctl create addon --name aws-ebs-csi-driver --cluster <YOUR-CLUSTER-NAME> --service-account-role-arn arn:aws:iam::<AWS-ACCOUNT-ID>:role/AmazonEKS_EBS_CSI_DriverRole --force
+
+
+--force: This flag forces the creation of the add-on, even if the add-on already exists. 
+It's useful when you want to overwrite or reinstall the add-on, potentially after an update or if the installation was unsuccessful previously.
+
+
+Note: If your cluster is in the AWS GovCloud (US-East) or AWS GovCloud (US-West) AWS Regions, then replace arn:aws: with arn:aws-us-gov:.
+
+References: https://repost.aws/knowledge-center/eks-persistent-storage

@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart
+  labels:
+    service: cart
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: cart
+  template:
+    metadata:
+      labels:
+        service: cart
+    spec:
+      {{ if .Values.psp.enabled }}       # only works if the {{ if .Values.psp.enabled }} is true but in our case it is false, so this block is not in use 
+      serviceAccountName: robot-shop
+      {{ end }}
+      containers:
+      - name: cart
+        image: {{ .Values.image.repo }}/rs-cart:{{ .Values.image.version }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        # agent networking access
+        env:                              # this create a env variable INSTANA_AGENT_HOST = <node ip of host>
+          - name: INSTANA_AGENT_HOST    
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 200m      #Limit: the container can use up to 0.2 CPU core, no more
+            memory: 100Mi   # Limit: the container can use up to 100 MiB of RAM, no more
+          requests:
+            cpu: 100m      #Request: the container is guaranteed 0.1 CPU core
+            memory: 50Mi   #Request: the container is guaranteed 50 MiB of RAM
+      {{- with .Values.cart.affinity }}    
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.cart.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.cart.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
