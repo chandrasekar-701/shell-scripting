@@ -1,0 +1,28 @@
+AWSTemplateFormatVersion: "2010-09-09" 
+Resources:
+  myec2instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      Tags: 
+        - Key: "name"
+          Value: "cftinstance"
+      AvailabilityZone: us-east-1a
+      ImageId: ami-05b10e08d247fb927
+      InstanceType: t2.micro
+      KeyName: feb-2025
+      NetworkInterfaces:  # give all network related properties within the networkInterfces properties
+        - DeviceIndex: 0
+          AssociatePublicIpAddress: true
+          SubnetId: !Ref SubnetId      # you must specify the subnet id here to get the public ip, because each public ip is mapped to private ip.only by mentioning the subnet id,then only the aws find the private ip range for that subnet and map the public ip to it.
+          GroupSet:
+            - !Ref SecurityGroupIds
+    DeletionPolicy: Retain   # without this property your created infrastructure will be deleted while deleting the stack template
+
+Parameters:  # whatever the parameter defined in parameter block ask you to enter its value while creating the resources.
+  vpcid: #this is to mention in which vpc the instance will going to be created, this takes vpcid as input while creating the stack
+    Type: String
+  SubnetId:
+    Type: String # this is to mention in which subnet the instance will be created,and it get subnetid as a input at the time of creating a stack.
+
+  SecurityGroupIds:
+    Type: String
