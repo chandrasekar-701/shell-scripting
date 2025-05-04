@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: "2010-09-09" 
+Resources:
+  myec2instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      Tags: 
+        - Key: "name"
+          Value: "cftinstance"
+      AvailabilityZone: us-east-1a
+      SubnetId: !Ref SubnetId
+      ImageId: ami-05b10e08d247fb927
+      InstanceType: t2.micro
+      KeyName: feb-2025     ####-----CFT can't create a key value pair while running a template,because it dosen't find the location to store the privatekey in your local machine.
+                            ## so that yo have to manually create a key using the AWS console/AWS CLI.
+      SecurityGroupIds:
+        - !Ref SecurityGroupIds
+
+Parameters:  # whatever the parameter defined in parameter block ask you to enter its value while creating the resources.
+  vpcid: #this is to mention in which vpc the instance will going to be created, this takes vpcid as input while creating the stack
+    Type: String
+  SubnetId:
+    Type: String # this is to mention in which subnet the instance will be created,and it get subnetid as a input at the time of creating a stack.
+
+  SecurityGroupIds:
+    Type: String
+
+
+                                      ############### how to add volume to the instance in cft ########################
+
+      
+      
+      1.by default it add root volume for the instance based on selected instance type,even though you didn't mention it in resources block
+
+  
+      2.code to add  existing volume in resources block ---- this will became the root volume of that instance
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-0abcdef1234567890
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeId: vol-0123456789abcdef0
+
+
+      3.code to create a new volume in cft
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-0abcdef1234567890
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1          #----------           /dev/sda1 By default, /dev/sda1 is used as the root volume for EC2 instances in AWS.
+          Ebs:
+            VolumeSize: 30      # Size in GiB
+            VolumeType: gp2     # General Purpose SSD
+            DeleteOnTermination: true
+        - DeviceName: /dev/sdb       ### -------------this the additional volume to the instances
+          Ebs:
+            VolumeSize: 100
+            VolumeType: io1     # Provisioned IOPS SSD
+            Iops: 500           # Number of IOPS
+            Encrypted: true
