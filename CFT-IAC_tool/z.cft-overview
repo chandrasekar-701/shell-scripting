@@ -1,0 +1,9 @@
+cft====cloud formation template
+cft allows you to develop the infrastructre only in AWS(like create Ec2 instances,VPC,S3..etc)
+cft supports drift detection,which means it point out the changes made in the infrastructre others after its creation using the cft template stack
+
+
+-------changeset------
+
+cft allow you to update the existing template,
+thus the changeset pointout the changes made in new template in comparision with existing template
