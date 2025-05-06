@@ -61,14 +61,14 @@ VALUES
 12. Setup App Server
 sudo yum install python3 python3-pip -y
 pip3 install flask flask-mysql-connector flask-cors
-vi app.py
+vi sample-app.py
 
                       #########When you close your terminal (or get disconnected), the shell sends a SIGHUP (hangup) signal to its child processes.
 nohup makes the process ignore SIGHUP, so it keeps running even after logout or terminal close.
 
 
-nohup python3 app.py > output.log 2>&1 &      ### nohup --used to run the code even after the terminal end/closed in background  ### simply using only & stop the background process after terminal closed.
-ps -ef | grep app.py
+nohup python3 sample-app.py > output.log 2>&1 &      ### nohup --used to run the code even after the terminal end/closed in background  ### simply using only & stop the background process after terminal closed.
+ps -ef | grep sample-app.py
 
 cat output.log 
 curl http://10.0.3.47:5000/login
