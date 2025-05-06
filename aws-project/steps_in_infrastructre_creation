@@ -54,9 +54,9 @@ CREATE TABLE users (
 
 INSERT INTO users (username, password, email) 
 VALUES 
-('MithranYT', 'Sensitive123#', 'LearnWithMithran@example.com'),
-('Arun', 'Arun123', 'arun@example.com'),
-('Surya', 'Surya123', 'surya@example.com');
+('chandru', 'kvs123#', 'hellochandru@gmail.com'),
+('vijay', 'vijay890', 'vijay@gmail.com'),
+('raja', 'raja546', 'raja@gmail.com');
 
 12. Setup App Server
 sudo yum install python3 python3-pip -y
