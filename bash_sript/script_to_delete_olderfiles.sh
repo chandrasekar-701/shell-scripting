@@ -7,4 +7,12 @@ days=$2
 
 find $path -mtime +$days -delete
 
-echo "Files in path: $path older than $days days are deleted successfully"                                                                            
+if [[ $? -eq 0 ]];
+then
+        echo "Files in path: $path older than $days days are deleted successfully"
+else
+        echo "deletion is not successfull"
+fi                                                                         
+
+
+$? is used to check the status,0 means successfull execution
