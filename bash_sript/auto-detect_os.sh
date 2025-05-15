@@ -5,7 +5,7 @@ then
     OS=$ID
 else
     echo "Cannot determine OS type."
-    exit 1
+    exit 1       # stops running code after this
 fi
 
 echo "Detected OS: $OS"
